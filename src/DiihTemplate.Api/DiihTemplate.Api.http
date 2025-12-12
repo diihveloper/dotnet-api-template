@@ -1,0 +1,6 @@
+@DiihTemplate.Api_HostAddress = http://localhost:5029
+
+GET {{DiihTemplate.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

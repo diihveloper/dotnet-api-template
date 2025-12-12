@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="10.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DiihTemplate.Application.Contracts\DiihTemplate.Application.Contracts.csproj" />
+    <ProjectReference Include="..\DiihTemplate.Core\DiihTemplate.Core.csproj" />
+    <ProjectReference Include="..\DiihTemplate.Domain.Shared\DiihTemplate.Domain.Shared.csproj" />
+  </ItemGroup>
+
+</Project>

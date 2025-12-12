@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <Database>POSTGRES</Database>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(Database)' == 'POSTGRES'">
+        <DefineConstants>POSTGRES</DefineConstants>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(Database)' == 'SQLSERVER'">
+        <DefineConstants>SQLSERVER</DefineConstants>
+    </PropertyGroup>
+
+
+    <ItemGroup>
+        <PackageReference Condition="'$(Database)' == 'POSTGRES'" Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.0"/>
+        <PackageReference Condition="'$(Database)' == 'SQLSERVER'" Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.1"/>
+        <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.0.1"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="10.0.1"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\DiihTemplate.Domain\DiihTemplate.Domain.csproj"/>
+    </ItemGroup>
+
+</Project>

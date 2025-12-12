@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DiihTemplate.Core\DiihTemplate.Core.csproj" />
+    <ProjectReference Include="..\DiihTemplate.Domain.Shared\DiihTemplate.Domain.Shared.csproj" />
+  </ItemGroup>
+
+</Project>

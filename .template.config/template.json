@@ -1,0 +1,13 @@
+{
+  "$schema": "http://json.schemastore.org/template",
+  "author": "Diihveloper",
+  "classifications": [ "Common", "Console" ],
+  "identity": "DiihVeloper.Template",
+  "name": "Template base para projetos",
+  "shortName": "diihtemplate",
+  "sourceName":"DiihTemplate",
+  "tags": {
+    "language": "C#",
+    "type": "project"
+  }
+}
