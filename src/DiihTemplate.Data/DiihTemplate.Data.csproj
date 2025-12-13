@@ -4,6 +4,8 @@
         <TargetFramework>net10.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <POSTGRES Condition="'$(POSTGRES)' == ''">true</POSTGRES>
+        <SQLSERVER Condition="'$(SQLSERVER)' == ''">false</SQLSERVER>
     </PropertyGroup>
     <ItemGroup>
         <PackageReference Condition="$(POSTGRES)" Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.0"/>

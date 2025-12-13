@@ -1,4 +1,5 @@
 using DiihTemplate.Application;
+using DiihTemplate.Core;
 using DiihTemplate.Core.Middlewares;
 using DiihTemplate.Data;
 using DiihTemplate.Infra;
@@ -13,6 +14,7 @@ builder.Services.AddDiihTemplateDbContext(builder.Configuration.GetValue<string>
 builder.Services.AddDiihTemplateApplicationServices();
 builder.Services.AddDiihTemplateInfra(builder.Configuration);
 builder.Services.AddDistributedMemoryCache();
+builder.Services.AddDiihTemplateCore();
 // Add services to the container.
 
 builder.Services.AddControllers();

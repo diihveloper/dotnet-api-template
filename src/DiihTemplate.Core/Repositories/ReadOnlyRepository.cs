@@ -19,7 +19,8 @@ public class ReadOnlyRepository<TEntity, TKey> : ReadOnlyRepository<TEntity>, IR
 
     public async Task<TEntity> GetAsync(TKey id, CancellationToken cancellationToken = default)
     {
-        return await DbContext.Set<TEntity>().FindAsync([id], cancellationToken: cancellationToken) ??
+        return await DbContext.Set<TEntity>().AsNoTracking()
+                   .FirstOrDefaultAsync(x => x.Id.Equals(id), cancellationToken) ??
                throw new EntityNotFoundException();
     }
 
