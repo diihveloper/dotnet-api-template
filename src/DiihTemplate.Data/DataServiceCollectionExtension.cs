@@ -19,7 +19,7 @@ public static class DataServiceCollectionExtension
 #if POSTGRES
             opt.UseNpgsql(connectionString);
 #elif SQLSERVER
-        opt.UseSqlServer(connectionString);
+            opt.UseSqlServer(connectionString);
 #else
 #error Nenhum banco de dados definido! Use POSTGRES ou SQLSERVER.
 #endif
