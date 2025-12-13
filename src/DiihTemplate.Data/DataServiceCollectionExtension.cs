@@ -20,6 +20,8 @@ public static class DataServiceCollectionExtension
             opt.UseNpgsql(connectionString);
 #elif SQLSERVER
             opt.UseSqlServer(connectionString);
+#else
+            opt.UseInMemoryDatabase(database);
 #endif
         }).AddRepositories();
     }

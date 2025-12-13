@@ -6,7 +6,7 @@ namespace DiihTemplate.Domain;
 
 public class AppUser : IdentityUser, IEntity<string>
 {
-    [Searchable] public string Nome { get; set; } = string.Empty;
+    [Searchable] public string Name { get; set; } = string.Empty;
 
     [ProtectedPersonalData][Searchable] public override string? Email { get; set; }
 
