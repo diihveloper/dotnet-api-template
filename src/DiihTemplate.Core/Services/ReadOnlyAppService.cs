@@ -1,5 +1,5 @@
 using System.Linq.Expressions;
-using AutoMapper;
+using MapsterMapper;
 using DiihTemplate.Core.Commons;
 using DiihTemplate.Core.Dtos;
 using DiihTemplate.Core.Entities;

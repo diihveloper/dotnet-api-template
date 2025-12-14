@@ -1,7 +1,7 @@
-﻿using AutoMapper;
-using DiihTemplate.Core.Dtos;
+﻿using DiihTemplate.Core.Dtos;
 using DiihTemplate.Core.Entities;
 using DiihTemplate.Core.Repositories;
+using MapsterMapper;
 
 namespace DiihTemplate.Core.Services;
 

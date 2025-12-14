@@ -1,4 +1,4 @@
-using AutoMapper;
+using MapsterMapper;
 using DiihTemplate.Core.Dtos;
 using DiihTemplate.Core.Entities;
 using DiihTemplate.Core.Repositories;
