@@ -17,9 +17,17 @@ public static class DataServiceCollectionExtension
                 throw new Exception("Connection string not found");
             opt.UseLazyLoadingProxies();
 #if POSTGRES
-            opt.UseNpgsql(connectionString);
+            opt.UseNpgsql(connectionString, npgsql =>
+                npgsql.EnableRetryOnFailure(
+                    maxRetryCount: 3,
+                    maxRetryDelay: TimeSpan.FromSeconds(5),
+                    errorCodesToAdd: null));
 #elif SQLSERVER
-            opt.UseSqlServer(connectionString);
+            opt.UseSqlServer(connectionString, sqlServer =>
+                sqlServer.EnableRetryOnFailure(
+                    maxRetryCount: 3,
+                    maxRetryDelay: TimeSpan.FromSeconds(5),
+                    errorNumbersToAdd: null));
 #else
             opt.UseInMemoryDatabase(database);
 #endif

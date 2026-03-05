@@ -30,7 +30,7 @@ public class DiihTemplateDbContext : IdentityDbContext<AppUser>
         this.SetupCoreEvents();
     }
     
-    private async Task DispatchDomainEvents()
+    private async Task DispatchDomainEventsAsync(Func<IDomainEvent, bool> filter)
     {
         var domainEntities = ChangeTracker
             .Entries<IHasEvents>()
@@ -38,8 +38,20 @@ public class DiihTemplateDbContext : IdentityDbContext<AppUser>
             .ToList();
         foreach (var entity in domainEntities)
         {
-            var events = entity.Entity.Events.ToList();
+            var events = entity.Entity.Events.Where(filter).ToList();
+            if (events.Count == 0) continue;
             await _domainEventDispatcher.DispatchAsync(events);
+        }
+    }
+
+    private async Task ClearDomainEvents()
+    {
+        var domainEntities = ChangeTracker
+            .Entries<IHasEvents>()
+            .Where(x => x.Entity.Events.Any())
+            .ToList();
+        foreach (var entity in domainEntities)
+        {
             entity.Entity.ClearEvents();
         }
     }
@@ -101,18 +113,24 @@ public class DiihTemplateDbContext : IdentityDbContext<AppUser>
     
     public override int SaveChanges(bool acceptAllChangesOnSuccess)
     {
-        UpdateAuditableEntities();
-        var result = base.SaveChanges(acceptAllChangesOnSuccess);
-        DispatchDomainEvents().GetAwaiter().GetResult();
-        return result;
+        throw new NotSupportedException(
+            "Synchronous SaveChanges is not supported. Use SaveChangesAsync instead to avoid potential deadlocks.");
     }
 
     public override async Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess,
         CancellationToken cancellationToken = default)
     {
         UpdateAuditableEntities();
+
+        // Pre-save events run in the same transaction
+        await DispatchDomainEventsAsync(e => e is IPreSaveDomainEvent);
+
         var result = await base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
-        await DispatchDomainEvents();
+
+        // Post-save events run after commit
+        await DispatchDomainEventsAsync(e => e is not IPreSaveDomainEvent);
+
+        await ClearDomainEvents();
         return result;
     }
 }

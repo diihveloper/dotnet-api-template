@@ -1,0 +1,12 @@
+**/.vs
+**/.vscode
+**/bin
+**/obj
+**/node_modules
+**/.git
+**/tests
+Dockerfile
+docker-compose.yml
+.dockerignore
+CLAUDE.md
+*.md

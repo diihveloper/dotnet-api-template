@@ -1,8 +1,10 @@
 ﻿using System.Reflection;
 using System.Threading.Channels;
 using DiihTemplate.Core.Events;
+using DiihTemplate.Core.Middlewares;
 using DiihTemplate.Core.Repositories;
 using DiihTemplate.Core.Services;
+using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace DiihTemplate.Core;
@@ -11,6 +13,7 @@ public static class ServiceCollectionExtension
 {
     public static void AddDiihTemplateCore(this IServiceCollection services)
     {
+        services.AddScoped<ValidationFilter>();
         services.AddSingleton<IDomainEventDispatcher, DomainEventDispatcher>();
 
         services.AddSingleton<Channel<IApplicationEvent>>(_ => Channel
