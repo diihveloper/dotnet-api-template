@@ -18,7 +18,8 @@
         ".gitignore",
         ".git/**/*",
         ".vscode/**/*",
-        ".idea/**/*"
+        ".idea/**/*",
+        "README.md"
       ],
       "modifiers": [
         {
