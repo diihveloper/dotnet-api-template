@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What This Is
 
-A .NET 10 project template (`dotnet new diihtemplate`) implementing clean architecture with DDD patterns. The template supports multi-database selection (Postgres/SqlServer) via `template.json` parameters.
+A .NET 10 project implementing clean architecture with DDD patterns.
 
 ## Build & Run Commands
 
@@ -18,7 +18,7 @@ dotnet run --project src/DiihTemplate.Api
 # Run tests
 dotnet test
 
-# Docker (with Postgres)
+# Docker
 docker compose up --build
 
 # Restore dependencies
@@ -61,8 +61,31 @@ dotnet restore
 
 ## Database
 
-Multi-database via MSBuild conditional compilation (`POSTGRES`/`SQLSERVER` symbols). DbContext auto-handles: UTC DateTime conversion, soft-delete query filters, domain event dispatching on save, lazy loading proxies. Connection resilience with `EnableRetryOnFailure` (3 retries, 5s delay).
+<!--#if (POSTGRES) -->
+Uses **PostgreSQL** with Npgsql provider. Connection string configured via `ConnectionStrings:Default` in `appsettings.json`.
+<!--#endif -->
+<!--#if (SQLSERVER) -->
+Uses **SQL Server** with Microsoft.EntityFrameworkCore.SqlServer provider. Connection string configured via `ConnectionStrings:Default` in `appsettings.json`.
+<!--#endif -->
 
+DbContext auto-handles: UTC DateTime conversion, soft-delete query filters, domain event dispatching on save, lazy loading proxies. Connection resilience with `EnableRetryOnFailure` (3 retries, 5s delay).
+
+<!--#if (SMTP || RABBITMQ || STORAGE) -->
+## Infrastructure Services
+
+<!--#if (SMTP) -->
+**Email (SMTP):** `IEmailSender` interface in Core, `SmtpEmailSender` implementation in Infra using MailKit. Supports HTML body, CC/BCC, attachments. Configure via `Email` section in `appsettings.json` (`Host`, `Port`, `Username`, `Password`, `FromEmail`, `FromName`, `UseSsl`).
+
+<!--#endif -->
+<!--#if (RABBITMQ) -->
+**Messaging (RabbitMQ):** `IMessageBroker` interface in Core, `RabbitMqMessageBroker` implementation in Infra using RabbitMQ.Client. Supports publish/subscribe with JSON serialization, persistent delivery, and manual ack/nack. Configure via `RabbitMq` section in `appsettings.json` (`HostName`, `Port`, `Username`, `Password`, `VirtualHost`, `DefaultExchange`). Registered as Singleton.
+
+<!--#endif -->
+<!--#if (STORAGE) -->
+**File Storage:** `IFileStorage` interface in Core, `LocalFileStorage` implementation in Infra. Supports upload, download, delete, and exists operations on local filesystem. Configure via `Storage:BasePath` in `appsettings.json`.
+
+<!--#endif -->
+<!--#endif -->
 ## API Features
 
 - **CORS:** Configurable via `Cors:Origins` array in `appsettings.json`
@@ -75,8 +98,12 @@ Multi-database via MSBuild conditional compilation (`POSTGRES`/`SQLSERVER` symbo
 Services are registered via extension methods called in `Program.cs`:
 - `AddDiihTemplateCore()` — repositories, UoW, event dispatcher, generic services, ValidationFilter
 - `AddDiihTemplateApplicationServices()` — event handlers, HttpClient, Mapster, FluentValidation validators
-- `AddDiihTemplateDbContext()` — EF Core with database selection and retry resilience
+- `AddDiihTemplateDbContext()` — EF Core with database provider and retry resilience
+<!--#if (SMTP || RABBITMQ || STORAGE) -->
+- `AddDiihTemplateInfra()` — infrastructure services (email, messaging, storage)
+<!--#else -->
 - `AddDiihTemplateInfra()` — infrastructure services
+<!--#endif -->
 
 ## Conventions
 
@@ -85,3 +112,7 @@ Services are registered via extension methods called in `Program.cs`:
 - `[Searchable]` attribute marks entity properties for query optimization
 - Identity uses `AppUser` extending `IdentityUser` with registration endpoint disabled
 - Validators go in the Application project, auto-discovered by assembly scanning
+<!--#if (SMTP || RABBITMQ || STORAGE) -->
+- Infrastructure interfaces in `Core/Services/`, implementations in `Infra/{Feature}/`
+- Settings classes use `IOptions<T>` pattern with named config sections
+<!--#endif -->

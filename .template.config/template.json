@@ -19,9 +19,49 @@
         ".git/**/*",
         ".vscode/**/*",
         ".idea/**/*"
+      ],
+      "modifiers": [
+        {
+          "condition": "(!SMTP)",
+          "exclude": [
+            "src/DiihTemplate.Infra/Email/**",
+            "src/DiihTemplate.Core/Services/IEmailSender.cs"
+          ]
+        },
+        {
+          "condition": "(!RABBITMQ)",
+          "exclude": [
+            "src/DiihTemplate.Infra/Messaging/**",
+            "src/DiihTemplate.Core/Services/IMessageBroker.cs"
+          ]
+        },
+        {
+          "condition": "(!STORAGE)",
+          "exclude": [
+            "src/DiihTemplate.Infra/Storage/**",
+            "src/DiihTemplate.Core/Services/IFileStorage.cs"
+          ]
+        }
       ]
     }
   ],
+  "specialCustomOperations": {
+    "**/*.md": {
+      "operations": [
+        {
+          "type": "conditional",
+          "configuration": {
+            "if": ["<!--#if"],
+            "else": ["<!--#else"],
+            "elseif": ["<!--#elseif"],
+            "endif": ["<!--#endif"],
+            "trim": true,
+            "wholeLine": true
+          }
+        }
+      ]
+    }
+  },
   "symbols": {
     "DATABASE": {
       "type": "parameter",
@@ -47,6 +87,24 @@
     "SQLSERVER": {
       "type": "computed",
       "value": "DATABASE == SqlServer"
+    },
+    "SMTP": {
+      "type": "parameter",
+      "datatype": "bool",
+      "description": "Incluir suporte a envio de emails via SMTP (MailKit)",
+      "defaultValue": "false"
+    },
+    "RABBITMQ": {
+      "type": "parameter",
+      "datatype": "bool",
+      "description": "Incluir suporte a mensageria com RabbitMQ",
+      "defaultValue": "false"
+    },
+    "STORAGE": {
+      "type": "parameter",
+      "datatype": "bool",
+      "description": "Incluir suporte a armazenamento de arquivos (local)",
+      "defaultValue": "false"
     }
   },
   "identity": "DiihVeloper.Template",

@@ -3,6 +3,9 @@
         <TargetFramework>net10.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <SMTP Condition="'$(SMTP)' == ''">false</SMTP>
+        <RABBITMQ Condition="'$(RABBITMQ)' == ''">false</RABBITMQ>
+        <STORAGE Condition="'$(STORAGE)' == ''">false</STORAGE>
     </PropertyGroup>
     <ItemGroup>
         <FrameworkReference Include="Microsoft.AspNetCore.App"/> <!-- Include ASP.NET Core -->
