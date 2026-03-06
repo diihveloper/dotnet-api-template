@@ -8,32 +8,47 @@ using DiihTemplate.Infra;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.RateLimiting;
 using Serilog;
+using Serilog.Events;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Configuration.AddIniFile("appsettings.ini", optional: true, reloadOnChange: true);
 builder.Configuration.AddEnvironmentVariables();
 
+#region Logging
+
+Log.Logger = new LoggerConfiguration()
+#if DEBUG
+    .MinimumLevel.Debug()
+#else
+    .MinimumLevel.Information()
+#endif
+    .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
+    .MinimumLevel.Override("System.Net", LogEventLevel.Warning)
+    .Enrich.FromLogContext()
+    .WriteTo.Console()
+    .CreateLogger();
+
+#endregion
+
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddDistributedMemoryCache();
 
 // DiihTemplate
-builder.Services.AddDiihTemplateDbContext(builder.Configuration.GetValue<string>("Database"),
-    builder.Configuration.GetConnectionString("Default"));
+builder.Services.AddDiihTemplateDbContext(
+    connectionString: builder.Configuration.GetConnectionString("Default")
+);
 builder.Services.AddDiihTemplateApplicationServices();
 builder.Services.AddDiihTemplateCore();
 builder.Services.AddDiihTemplateInfra(builder.Configuration);
 
 // Add services to the container.
-builder.Services.AddControllers(options =>
-{
-    options.Filters.Add<ValidationFilter>();
-});
+builder.Services.AddControllers(options => { options.Filters.Add<ValidationFilter>(); });
+builder.Services.AddSwaggerGen();
 builder.Services.AddOpenApi();
 builder.Host.UseSerilog();
 
 // CORS
-var corsOrigins = builder.Configuration.GetSection("Cors:Origins").Get<string[]>()
-                  ?? [builder.Configuration.GetValue<string>("Cors:Origin") ?? "http://localhost:4200"];
+var corsOrigins = builder.Configuration.GetSection("Cors:Origins").Get<string[]>() ?? [];
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
@@ -75,7 +90,8 @@ builder.Services
 
 
 var app = builder.Build();
-
+app.UseSwagger();
+app.UseSwaggerUI();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
